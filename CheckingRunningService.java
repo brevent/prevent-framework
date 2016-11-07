@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import me.piebridge.prevent.BuildConfig;
 import me.piebridge.prevent.common.Configuration;
+import me.piebridge.prevent.common.PackageUtils;
 import me.piebridge.prevent.framework.util.HookUtils;
 
 /**
@@ -69,7 +70,7 @@ abstract class CheckingRunningService implements Runnable {
         if (!service.started) {
             return;
         }
-        if (BuildConfig.DEBUG || prevents || service.uid >= SystemHook.FIRST_APPLICATION_UID) {
+        if (BuildConfig.DEBUG || prevents || service.uid >= PackageUtils.FIRST_APPLICATION_UID) {
             PreventLog.v("prevents: " + prevents + ", name: " + name + ", count: " + service.clientCount + ", label: " + service.clientLabel
                     + ", uid: " + service.uid + ", pid: " + service.pid + ", process: " + service.process + ", flags: " + service.flags);
         }

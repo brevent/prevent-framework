@@ -282,7 +282,7 @@ public class SystemReceiver extends ActivityReceiver {
 
     private void handleGetPackages(String action) {
         Map<String, Boolean> preventPackages = new TreeMap<String, Boolean>(mPreventPackages);
-        if (!GmsUtils.canStopGms()) {
+        if (!SystemHook.canStopGms()) {
             for (String packageName : GmsUtils.getGmsPackages()) {
                 if (Boolean.TRUE.equals(preventPackages.get(packageName))) {
                     preventPackages.put(packageName, false);

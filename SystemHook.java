@@ -60,7 +60,6 @@ public final class SystemHook {
     public static final int TIME_CHECK_GMS = 30;
     public static final int TIME_CHECK_DISALLOW = 5;
     public static final int TIME_CHECK_USER_LEAVING = 60;
-    public static final int FIRST_APPLICATION_UID = 10000;
 
     private static final int OP_RUN_IN_BACKGROUND = 63;
 
@@ -243,7 +242,7 @@ public final class SystemHook {
                 checkingWhiteList.remove(packageName);
             }
         }
-        if (GmsUtils.canStopGms()) {
+        if (canStopGms()) {
             if (forcestop) {
                 forceStopPackageIfNeeded(packageName);
             }
@@ -298,7 +297,7 @@ public final class SystemHook {
         synchronized (CHECKING_LOCK) {
             whiteList.addAll(checkingWhiteList);
         }
-        if (!GmsUtils.canStopGms()) {
+        if (!canStopGms()) {
             whiteList.addAll(GmsUtils.getGmsPackages());
         }
         return whiteList;
@@ -391,7 +390,7 @@ public final class SystemHook {
             if (file.isDirectory() && TextUtils.isDigitsOnly(file.getName())) {
                 int pid = Integer.parseInt(file.getName());
                 int uid = HideApiUtils.getUidForPid(pid);
-                if (HideApiUtils.getParentPid(pid) == 1 && uid >= FIRST_APPLICATION_UID) {
+                if (HideApiUtils.getParentPid(pid) == 1 && uid >= PackageUtils.FIRST_APPLICATION_UID) {
                     killIfNeed(uid, pid);
                 }
             }
@@ -696,6 +695,10 @@ public final class SystemHook {
 
     public static Context getContext() {
         return mContext;
+    }
+
+    public static boolean canStopGms() {
+        return GmsUtils.canStopGms() && !SystemHook.hasRunningGapps();
     }
 
 }

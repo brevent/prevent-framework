@@ -209,7 +209,7 @@ public class ActivityManagerServiceHook {
         if (SystemHook.isFramework(packageName)) {
             return true;
         } else if (TextUtils.isDigitsOnly(sender)) {
-            return Integer.parseInt(sender) < SystemHook.FIRST_APPLICATION_UID;
+            return Integer.parseInt(sender) < PackageUtils.FIRST_APPLICATION_UID;
         } else if (cannotPrevent(sender)
                 || mContext.getPackageManager().getLaunchIntentForPackage(sender) == null
                 || (SystemHook.isSystemPackage(packageName) && SystemHook.hasRunningActivity(sender))) {
