@@ -98,6 +98,7 @@ public final class SystemHook {
     private static String currentPackageName;
     private static Set<String> currentPackageNames;
     private static volatile boolean expired = true;
+    private static Object lock = new Object();
 
     private static int version;
     private static String method;
@@ -534,11 +535,19 @@ public final class SystemHook {
     }
 
     public static Set<String> getCurrentPackageNames() {
-        if (currentPackageNames == null || expired) {
-            expired = false;
-            currentPackageNames = ActivityManagerServiceUtils.getCurrentPackages();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return Collections.singleton(currentPackageName);
+        } else {
+            if (currentPackageNames == null || expired) {
+                synchronized (lock) {
+                    if (expired) {
+                        expired = false;
+                        currentPackageNames = ActivityManagerServiceUtils.getCurrentPackages();
+                    }
+                }
+            }
+            return currentPackageNames;
         }
-        return currentPackageNames;
     }
 
     public static void checkSync(final String packageName) {
