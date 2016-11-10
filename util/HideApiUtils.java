@@ -2,6 +2,7 @@ package me.piebridge.prevent.framework.util;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Process;
 
 import java.lang.reflect.Field;
@@ -33,7 +34,9 @@ public class HideApiUtils {
         try {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.forceStopPackage(packageName);
-            AlarmManagerServiceUtils.releaseAlarm(context, packageName);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                AlarmManagerServiceUtils.releaseAlarm(context, packageName);
+            }
         } catch (Throwable t) { // NOSONAR
             PreventLog.e("cannot force stop package" + packageName, t);
         }
