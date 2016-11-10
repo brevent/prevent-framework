@@ -431,7 +431,8 @@ public final class SystemHook {
     }
 
     public static void onLaunchActivity(Object activityRecord) {
-        updateCurrentPackageName(activityRecord);
+        expired = true;
+        currentPackageName = ActivityRecordUtils.getPackageName(activityRecord);
         PreventLog.v("launch, current: " + currentPackageName);
         if (systemReceiver != null) {
             systemReceiver.onLaunchActivity(activityRecord);
@@ -439,6 +440,7 @@ public final class SystemHook {
     }
 
     public static void onDestroyActivity(Object activityRecord) {
+        expired = true;
         if (systemReceiver != null) {
             if (systemReceiver.onDestroyActivity(activityRecord)) {
                 String packageName = ActivityRecordUtils.getPackageName(activityRecord);
@@ -448,19 +450,16 @@ public final class SystemHook {
     }
 
     public static void onResumeActivity(Object activityRecord) {
-        updateCurrentPackageName(activityRecord);
+        expired = true;
+        currentPackageName = ActivityRecordUtils.getPackageName(activityRecord);
         PreventLog.v("resume, current: " + currentPackageName);
         if (systemReceiver != null) {
             systemReceiver.onResumeActivity(activityRecord);
         }
     }
 
-    private static void updateCurrentPackageName(Object activityRecord) {
-        currentPackageName = ActivityRecordUtils.getPackageName(activityRecord);
-        expired = true;
-    }
-
     public static void onUserLeavingActivity(Object activityRecord) {
+        expired = true;
         String packageName = ActivityRecordUtils.getPackageName(activityRecord);
         PreventLog.v("leaving, current: " + packageName);
         if (systemReceiver != null) {
@@ -469,12 +468,14 @@ public final class SystemHook {
     }
 
     public static void onStartHomeActivity(String packageName) {
+        expired = true;
         if (systemReceiver != null) {
             systemReceiver.onDestroyActivity("start home activity", packageName);
         }
     }
 
     public static void onMoveActivityToBack(final String packageName) {
+        expired = true;
         PreventLog.v("move activity to back, package: " + packageName);
         moveBackExecutor.schedule(new Runnable() {
             @Override
@@ -487,6 +488,7 @@ public final class SystemHook {
     }
 
     public static void onAppDied(Object processRecord) {
+        expired = true;
         if (systemReceiver != null) {
             systemReceiver.onAppDied(processRecord);
         }
