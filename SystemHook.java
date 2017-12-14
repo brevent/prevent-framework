@@ -61,8 +61,6 @@ public final class SystemHook {
     public static final int TIME_CHECK_DISALLOW = 5;
     public static final int TIME_CHECK_USER_LEAVING = 60;
 
-    private static final int OP_RUN_IN_BACKGROUND = 63;
-
     private static Context mContext;
     private static boolean activated;
     private static ClassLoader mClassLoader;
@@ -697,7 +695,7 @@ public final class SystemHook {
             try {
                 IAppOpsService appOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService(Context.APP_OPS_SERVICE));
                 int packageUid = AppGlobals.getPackageManager().getPackageUid(packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, 0);
-                appOpsService.setMode(OP_RUN_IN_BACKGROUND, packageUid, packageName, mode);
+                appOpsService.setMode(AppOpsManager.OP_RUN_IN_BACKGROUND, packageUid, packageName, mode);
             } catch (RemoteException e) {
                 PreventLog.d("cannot set background for " + packageName, e);
             }
